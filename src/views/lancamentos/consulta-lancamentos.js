@@ -4,8 +4,42 @@ import Card from '../../components/card'
 import FormGroup from '../../components/form-group'
 import SelectMenu from '../../components/selectMenu'
 import LancamentosTable from './lancamentosTable'
+import LancamentoService from '../../app/service/lancamentoService'
+import LocalStorageService from '../../app/service/localStorageService'
 
 class ConsultaLancamentos extends React.Component {
+
+    state = {
+        ano: '',
+        mes: '',
+        tipo: '',
+        lancamentos: []
+    }
+
+    constructor() {
+        super();
+        this.service = new LancamentoService();
+    }
+
+    buscar = () => {
+        const usuarioLogado = LocalStorageService.getItem('_usuario_logado')
+
+
+        const lancamentoFiltro = {
+            ano: this.state.ano,
+            mes: this.state.mes,
+            tipo: this.state.tipo,
+            usuario: usuarioLogado.id
+        }
+
+        this.service.consultar(lancamentoFiltro)
+            .then(resposta => {
+                this.setState({ lancamentos: resposta.data })
+            }).catch(error => {
+                console.log(error)
+            })
+    }
+
     render() {
 
         const meses = [
@@ -30,9 +64,6 @@ class ConsultaLancamentos extends React.Component {
             { label: 'Receita', value: 'RECEITA' }
         ]
 
-        const lancamentos = [{
-            id: 1, descricao: 'Salário', valor: 5000, mes: 1, tipo: 'Receita', status: 'Efetivado'
-        }]
         return (
             <Card title="Consulta Lancamentos">
                 <div className="row">
@@ -42,16 +73,29 @@ class ConsultaLancamentos extends React.Component {
                                 <input type="text"
                                     className="form-control"
                                     id="inputAno"
-                                    aria-describedby="emailHelp"
-                                    placeholder="Digite o ano" />
+                                    value={this.state.ano}
+                                    onChange={e => this.setState({ ano: e.target.value })}
+                                    placeholder="Digite o ano"
+                                />
                             </FormGroup>
                             <FormGroup htmlFor="inputMes" label="Mes: *">
-                                <SelectMenu id="inputMes" className="form-control" lista={meses} />
+                                <SelectMenu id="inputMes"
+                                    className="form-control"
+                                    value={this.state.mes}
+                                    onChange={e => this.setState({ mes: e.target.value })}
+                                    lista={meses}
+                                />
                             </FormGroup>
                             <FormGroup htmlFor="inputTipo" label="Tipo Lançamento: *">
-                                <SelectMenu id="inputTipo" className="form-control" lista={tipo} />
+                                <SelectMenu
+                                    id="inputTipo"
+                                    className="form-control"
+                                    value={this.state.tipo}
+                                    onChange={e => this.setState({ tipo: e.target.value })}
+                                    lista={tipo}
+                                />
                             </FormGroup>
-                            <button type="button" className="btn btn-success">Buscar</button>
+                            <button onClick={this.buscar} type="button" className="btn btn-success">Buscar</button>
                             <button type="button" className="btn btn-danger">Cadastrar</button>
 
                         </div>
@@ -61,7 +105,7 @@ class ConsultaLancamentos extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         <div className="bs-component">
-                            <LancamentosTable lancamentos={lancamentos} />
+                            <LancamentosTable lancamentos={this.state.lancamentos} />
                         </div>
                     </div>
                 </div>

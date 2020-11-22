@@ -25,7 +25,6 @@ export default props => {
                     <th scope="col">Situação</th>
                     <th scope="col">Ações</th>
                 </tr>
-
             </thead>
             <tbody>{rows}</tbody>
 
