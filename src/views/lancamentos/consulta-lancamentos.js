@@ -26,7 +26,7 @@ class ConsultaLancamentos extends React.Component {
         super();
         this.service = new LancamentoService();
     }
-
+   
     buscar = () => {
         if (!this.state.ano) {
             messages.mensagemErro('O preenchimento do campo ano é obrigatório.')
@@ -52,7 +52,7 @@ class ConsultaLancamentos extends React.Component {
     }
 
     editar = (id) => {
-        console.log('Editar', id)
+        this.props.history.push(`/cadastro-lancamentos/${id}`)
     }
 
     prepataFormularioCadastro = () => {

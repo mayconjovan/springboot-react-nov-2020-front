@@ -30,6 +30,11 @@ export default class LancamentoService extends ApiService {
             { label: 'Receita', value: 'RECEITA' }
         ]
     }
+
+    obterPorId(id) {
+        return this.get(`/${id}`)
+    }
+    
     consultar(lancamentoFiltro) {
         let params = `?ano=${lancamentoFiltro.ano}`
 
@@ -62,5 +67,9 @@ export default class LancamentoService extends ApiService {
 
     salvar(lancamento) {
         return this.post('/', lancamento)
+    }
+
+    atualizar(lancamento) {
+        return this.put(`/${lancamento.id}`, lancamento)
     }
 }
