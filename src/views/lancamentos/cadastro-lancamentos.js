@@ -17,7 +17,8 @@ class CadastroLancamentos extends React.Component {
         ano: '',
         tipo: '',
         status: '',
-        usuario: null
+        usuario: null,
+        atualizando: false
     }
 
     constructor() {
@@ -30,7 +31,7 @@ class CadastroLancamentos extends React.Component {
         if (params.id) {
             this.service.obterPorId(params.id)
                 .then(response => {
-                    this.setState({ ...response.data })
+                    this.setState({ ...response.data, atualizando: true })
                 }).catch(error => {
                     messages.mensagemErro(error.response.data)
                 })
@@ -39,15 +40,17 @@ class CadastroLancamentos extends React.Component {
 
     submit = () => {
         const usuariologado = LocalStorageService.getItem('_usuario_logado')
+        
         const { descricao, valor, mes, ano, tipo } = this.state;
+        const lancamento = { descricao, valor, mes, ano, tipo, usuario: usuariologado.id }
 
-        const lancamento = {
-            descricao,
-            valor,
-            mes,
-            ano,
-            tipo,
-            usuario: usuariologado.id
+        try {
+            this.service.validar(lancamento)
+        } catch (erro) {
+            const mensagens = erro.mensagens;
+            mensagens.forEach(msg => 
+                messages.mensagemErro(msg))
+                return false;        
         }
 
         this.service
@@ -61,19 +64,8 @@ class CadastroLancamentos extends React.Component {
     }
 
     atualizar = () => {
-        const usuariologado = LocalStorageService.getItem('_usuario_logado')
         const { descricao, valor, mes, ano, tipo, status, id, usuario } = this.state;
-
-        const lancamento = {
-            descricao,
-            valor,
-            mes,
-            ano,
-            tipo,
-            id,
-            usuario,
-            status
-        }
+        const lancamento = { descricao, valor, mes, ano, tipo, id, usuario, status }
 
         this.service
             .atualizar(lancamento)
@@ -99,7 +91,7 @@ class CadastroLancamentos extends React.Component {
         const meses = this.service.obterListaMeses();
 
         return (
-            <Card title="Cadastro de Lançamento">
+            <Card title={this.state.atualizando ? 'Atualizar lançamento' : 'Cadastro de lançamento'}>
                 <div className="row">
                     <div className="col-md-12">
 
@@ -176,10 +168,15 @@ class CadastroLancamentos extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-md-6">
-                        <button className="btn btn-success" onClick={this.submit}>Salvar</button>
-                        <button className="btn btn-primary" onClick={this.atualizar}>Atualizar</button>
-                        <button className="btn btn-danger" onClick={e => this.props.history.push('/consulta-lancamentos')}
-                        >Cancelar</button>
+                        {this.state.atualizando ?
+                            (
+                                <button className="btn btn-primary" onClick={this.atualizar}>Atualizar</button>
+                            ) : (
+                                <button className="btn btn-success" onClick={this.submit}>Salvar</button>
+                            )
+
+                        }
+                        <button className="btn btn-danger" onClick={e => this.props.history.push('/consulta-lancamentos')}>Cancelar</button>
                     </div>
                 </div>
             </Card>
