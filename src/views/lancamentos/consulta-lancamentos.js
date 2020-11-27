@@ -26,7 +26,7 @@ class ConsultaLancamentos extends React.Component {
         super();
         this.service = new LancamentoService();
     }
-   
+
     buscar = () => {
         if (!this.state.ano) {
             messages.mensagemErro('O preenchimento do campo ano é obrigatório.')
@@ -77,6 +77,19 @@ class ConsultaLancamentos extends React.Component {
                 messages.mensagemSucesso('Lançamento excluido.')
             }).catch(error => {
                 messages.mensagemErro('Ocorreu um erro ao tentar deletar lançamento.')
+            })
+    }
+    alterarStatus = (lancamento, status) => {
+        this.service.alterarStatus(lancamento.id, status)
+            .then(response => {
+                const lancamentos = this.state.lancamentos;
+                const index = lancamentos.indexOf(lancamento);
+                if (index !== -1) {
+                    lancamento['status'] = status;
+                    lancamentos[index] = lancamento;
+                    this.setState({lancamento})
+                }
+                messages.mensagemSucesso('Status atualizado com sucesso!')
             })
     }
 
@@ -147,6 +160,7 @@ class ConsultaLancamentos extends React.Component {
                                 lancamentos={this.state.lancamentos}
                                 deleteAction={this.abrirConfirmacao}
                                 editAction={this.editar}
+                                alterarStatus={this.alterarStatus}
                             />
                         </div>
                     </div>

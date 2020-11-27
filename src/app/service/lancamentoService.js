@@ -35,7 +35,10 @@ export default class LancamentoService extends ApiService {
     obterPorId(id) {
         return this.get(`/${id}`)
     }
-    
+
+    alterarStatus(id, status) {
+        return this.put(`/${id}/atualiza-status`, { status })
+    }
     consultar(lancamentoFiltro) {
         let params = `?ano=${lancamentoFiltro.ano}`
 
@@ -65,26 +68,26 @@ export default class LancamentoService extends ApiService {
     validar(lancamento) {
         const erros = [];
 
-        if(!lancamento.ano) {
+        if (!lancamento.ano) {
             erros.push('Informe o ano.')
         }
-        
-        if(!lancamento.mes) {
+
+        if (!lancamento.mes) {
             erros.push('Informe o mês.')
         }
-        
-        if(!lancamento.descricao) {
+
+        if (!lancamento.descricao) {
             erros.push('Informe a descrição.')
         }
-        
-        if(!lancamento.valor) {
+
+        if (!lancamento.valor) {
             erros.push('Informe o valor.')
         }
-        if(!lancamento.tipo) {
+        if (!lancamento.tipo) {
             erros.push('Informe o tipo.')
         }
 
-        if(erros && erros.length > 0) {
+        if (erros && erros.length > 0) {
             throw new ErroValidacao(erros);
         }
     }
