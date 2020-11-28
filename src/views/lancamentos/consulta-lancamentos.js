@@ -45,7 +45,11 @@ class ConsultaLancamentos extends React.Component {
 
         this.service.consultar(lancamentoFiltro)
             .then(resposta => {
-                this.setState({ lancamentos: resposta.data })
+                const lista = resposta.data;
+                if (lista.length < 1) {
+                    messages.mensagemAlerta("Nenhum resultado encontrado.")
+                }
+                this.setState({ lancamentos: lista })
             }).catch(error => {
                 console.log(error)
             })
@@ -87,7 +91,7 @@ class ConsultaLancamentos extends React.Component {
                 if (index !== -1) {
                     lancamento['status'] = status;
                     lancamentos[index] = lancamento;
-                    this.setState({lancamento})
+                    this.setState({ lancamento })
                 }
                 messages.mensagemSucesso('Status atualizado com sucesso!')
             })
@@ -146,8 +150,8 @@ class ConsultaLancamentos extends React.Component {
                                     lista={tipo}
                                 />
                             </FormGroup>
-                            <button onClick={this.buscar} type="button" className="btn btn-success">Buscar</button>
-                            <button onClick={this.prepataFormularioCadastro} type="button" className="btn btn-danger">Cadastrar</button>
+                            <button onClick={this.buscar} type="button" className="btn btn-success"><i className="pi pi-search" /> Buscar</button>
+                            <button onClick={this.prepataFormularioCadastro} type="button" className="btn btn-danger"><i className="pi pi-plus" />  Cadastrar</button>
 
                         </div>
                     </div>

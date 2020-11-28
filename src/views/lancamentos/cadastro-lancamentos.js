@@ -40,7 +40,7 @@ class CadastroLancamentos extends React.Component {
 
     submit = () => {
         const usuariologado = LocalStorageService.getItem('_usuario_logado')
-        
+
         const { descricao, valor, mes, ano, tipo } = this.state;
         const lancamento = { descricao, valor, mes, ano, tipo, usuario: usuariologado.id }
 
@@ -48,9 +48,9 @@ class CadastroLancamentos extends React.Component {
             this.service.validar(lancamento)
         } catch (erro) {
             const mensagens = erro.mensagens;
-            mensagens.forEach(msg => 
+            mensagens.forEach(msg =>
                 messages.mensagemErro(msg))
-                return false;        
+            return false;
         }
 
         this.service
@@ -170,13 +170,20 @@ class CadastroLancamentos extends React.Component {
                     <div className="col-md-6">
                         {this.state.atualizando ?
                             (
-                                <button className="btn btn-primary" onClick={this.atualizar}>Atualizar</button>
+                                <button className="btn btn-primary"
+                                    onClick={this.atualizar}><i className="pi pi-refresh"></i>
+                                    Atualizar
+                                </button>
                             ) : (
-                                <button className="btn btn-success" onClick={this.submit}>Salvar</button>
+                                <button className="btn btn-success"
+                                    onClick={this.submit}><i className="pi pi-save"></i> Salvar
+                                </button>
                             )
 
                         }
-                        <button className="btn btn-danger" onClick={e => this.props.history.push('/consulta-lancamentos')}>Cancelar</button>
+                        <button className="btn btn-danger"
+                            onClick={e => this.props.history.push('/consulta-lancamentos')}>
+                            <i className="pi pi-times"></i> Cancelar</button>
                     </div>
                 </div>
             </Card>
